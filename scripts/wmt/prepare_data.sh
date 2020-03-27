@@ -43,27 +43,27 @@ mkdir -p $DATA_PATH
 cd $DATA_PATH
 
 echo "Downloading and extracting Commoncrawl data (919 MB) for training..."
-wget --trust-server-names http://www.statmt.org/wmt13/training-parallel-commoncrawl.tgz
+wget -nc --trust-server-names http://www.statmt.org/wmt13/training-parallel-commoncrawl.tgz
 tar zxvf training-parallel-commoncrawl.tgz
 ls | grep -v 'commoncrawl.de-en.[de,en]' | xargs rm
 
 echo "Downloading and extracting Europarl data (658 MB) for training..."
-wget --trust-server-names http://www.statmt.org/wmt13/training-parallel-europarl-v7.tgz
+wget -nc --trust-server-names http://www.statmt.org/wmt13/training-parallel-europarl-v7.tgz
 tar zxvf training-parallel-europarl-v7.tgz
 cd training && ls | grep -v 'europarl-v7.de-en.[de,en]' | xargs rm
 cd .. && mv training/europarl* . && rm -r training training-parallel-europarl-v7.tgz
 
 echo "Downloading and extracting News Commentary data (76 MB) for training..."
-wget --trust-server-names http://data.statmt.org/wmt16/translation-task/training-parallel-nc-v11.tgz
+wget -nc --trust-server-names http://data.statmt.org/wmt16/translation-task/training-parallel-nc-v11.tgz
 tar zxvf training-parallel-nc-v11.tgz
 cd training-parallel-nc-v11 && ls | grep -v news-commentary-v11.de-en.[de,en] | xargs rm
 cd .. && mv training-parallel-nc-v11/* . && rm -r training-parallel-nc-v11 training-parallel-nc-v11.tgz
 
 # Validation and test data are put into the $DATA_PATH/test folder
 echo "Downloading and extracting newstest2014 data (4 MB) for validation..."
-wget --trust-server-names http://www.statmt.org/wmt14/test-filtered.tgz
+wget -nc --trust-server-names http://www.statmt.org/wmt14/test-filtered.tgz
 echo "Downloading and extracting newstest2017 data (5 MB) for testing..."
-wget --trust-server-names http://data.statmt.org/wmt17/translation-task/test.tgz
+wget -nc --trust-server-names http://data.statmt.org/wmt17/translation-task/test.tgz
 tar zxvf test-filtered.tgz && tar zxvf test.tgz
 cd test && ls | grep -v '.*deen\|.*ende' | xargs rm
 cd .. && rm test-filtered.tgz test.tgz && cd ..

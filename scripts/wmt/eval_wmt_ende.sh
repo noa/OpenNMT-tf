@@ -1,36 +1,30 @@
 #!/bin/bash
 
-if [ $# -eq 0 ]
-then
-    echo "usage: $0 <data_dir>"
-    exit 1
-fi
+set -e
 
-DATA_PATH=$1
-SP_PATH=/usr/local/bin
-
+DATA_PATH=${ONMT_DATA_DIR}/wmt_ende
+SENTENCE_PIECE_MODEL=${ONMT_DATA_DIR}/data
 runconfig=wmt_ende_transformer
 testset=newstest2017-ende
 sl=en
 tl=de
 
-export PATH=$SP_PATH:$PATH
-export CUDA_VISIBLE_DEVICES=0
+#wget -nc https://raw.githubusercontent.com/OpenNMT/OpenNMT-tf/master/third_party/input-from-sgm.perl
+#wget -nc https://raw.githubusercontent.com/OpenNMT/OpenNMT-tf/master/third_party/multi-bleu-detok.perl
 
-wget -nc https://raw.githubusercontent.com/OpenNMT/OpenNMT-tf/master/third_party/input-from-sgm.perl
-wget -nc https://raw.githubusercontent.com/OpenNMT/OpenNMT-tf/master/third_party/multi-bleu-detok.perl
-
-perl input-from-sgm.perl < $DATA_PATH/test/$testset-src.$sl.sgm \
-   | spm_encode --model=data/wmt$sl$tl.model > data/$testset-src.$sl
-perl input-from-sgm.perl < $DATA_PATH/test/$testset-ref.$tl.sgm > data/$testset-ref.$tl
+perl input-from-sgm.perl < ${DATA_PATH}/test/$testset-src.$sl.sgm \
+   | spm_encode --model=${SENTENCE_PIECE_MODEL}/wmt$sl$tl.model > data/$testset-src.$sl
+perl input-from-sgm.perl < ${DATA_PATH}/test/$testset-ref.$tl.sgm > data/$testset-ref.$tl
 
 if true; then
-  onmt-main \
-            --config config/wmt_ende.yml --auto_config \
-            --checkpoint_path=$runconfig/avg \
-            infer \
-            --features_file data/$testset-src.$sl \
-            > data/$testset-src.hyp.$tl
+    onmt-main \
+	--data_dir ${ONMT_DATA_DIR} \
+	--run_dir ${ONMT_EXPT_DIR} \
+        --config config/custom_wmt_ende.yml --auto_config \
+        --checkpoint_path=${ONMT_EXPT_DIR}/ckpt_avg \
+        infer \
+        --features_file data/$testset-src.$sl \
+        > data/$testset-src.hyp.$tl
 fi
 
 if true; then
