@@ -1,0 +1,31 @@
+model_dir: run/
+
+data:
+  train_features_file: data/train.en
+  train_labels_file: data/train.de
+  eval_features_file: data/valid.en
+  eval_labels_file: data/valid.de
+  source_vocabulary: data/wmtende.vocab
+  target_vocabulary: data/wmtende.vocab
+
+train:
+  save_checkpoints_steps: 2000
+  batch_size: 4096
+  batch_type: tokens
+  effective_batch_size: 8192
+  label_smoothing: 0.1
+  max_step: 500000
+  average_last_checkpoints: 8
+  maximum_features_length: 200
+  maximum_labels_length: 200
+
+eval:
+  external_evaluators: bleu
+  export_on_best: bleu
+  early_stopping:
+    metric: bleu
+    min_improvement: 0.1
+    steps: 4
+
+infer:
+  batch_size: 32
